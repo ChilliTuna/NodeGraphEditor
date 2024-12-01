@@ -1,16 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 
 namespace NodeSys
 {
-    public class NodeGraphNode :  Node
+    public class NodeGraphNode : Node
     {
-        public string UID;
+        private string nodeGUID;
+        private string textValue;
+        private bool entryPoint = false;
 
-        public string textValue;
+        public string NodeGUID { get { return nodeGUID; } internal set { textValue = value; } }
+        public string TextValue { get { return textValue; } set { textValue = value; } }
+        public bool EntryPoint { get { return entryPoint; } set { entryPoint = value; } }
 
-        public bool entryPoint = false;
+        public NodeGraphNode()
+        {
+            GenerateNodeUID();
+        }
+
+        public void GenerateNodeUID()
+        {
+            nodeGUID = Guid.NewGuid().ToString();
+        }
     }
 }

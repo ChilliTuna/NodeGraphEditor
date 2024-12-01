@@ -37,15 +37,15 @@ namespace NodeSys
             return new NodeGraphNode
             {
                 title = nodeName,
-                UID = Guid.NewGuid().ToString(),
-                textValue = "default text",
-                entryPoint = true
+                TextValue = "default text",
+                EntryPoint = false
             };
         }
 
         private NodeGraphNode GenerateEntryPointNode()
         {
             NodeGraphNode node = GenerateBlankNode("Start Node");
+            node.EntryPoint = true;
 
             Port defaultPort = GeneratePort(node, Direction.Output, Port.Capacity.Single);
             defaultPort.portName = "Next";
@@ -57,7 +57,7 @@ namespace NodeSys
             return node;
         }
 
-        private NodeGraphNode GenerateNode(string nodeName)
+        public NodeGraphNode GenerateNode(string nodeName)
         {
             NodeGraphNode node = GenerateBlankNode(nodeName);
 
@@ -76,6 +76,9 @@ namespace NodeSys
             node.titleButtonContainer.Add(newOutputButton);
 
             node.SetPosition(new Rect(new Vector2(100, 100), defaultNodeSize));
+            node.style.minWidth = defaultNodeSize.x;
+            node.style.minHeight = defaultNodeSize.y;
+            node.style.flexGrow = 1;
             RefreshNode(node);
 
 
@@ -84,8 +87,8 @@ namespace NodeSys
 
         private void RefreshNode(NodeGraphNode node)
         {
-            node.RefreshExpandedState();
             node.RefreshPorts();
+            node.RefreshExpandedState();
         }
 
         private Port GeneratePort<T>(NodeGraphNode node, Direction ioDirection, Port.Capacity capacity=Port.Capacity.Single)
@@ -98,14 +101,44 @@ namespace NodeSys
             return GeneratePort<string>(node, ioDirection, capacity);
         }
 
-        private void AddOutPort(NodeGraphNode node)
+        public void AddOutPort(NodeGraphNode node, string portName = null)
         {
             Port newPort = GeneratePort(node, Direction.Output);
 
-            int outPortCount = node.outputContainer.Query("connector").ToList().Count;
-            newPort.portName = "Out " + outPortCount.ToString();
+            string portNameVal = portName != null ? portName : "Out " + node.outputContainer.Query("connector").ToList().Count.ToString();
 
+            Label oldLabel = newPort.contentContainer.Q<Label>("type");
+            newPort.contentContainer.Remove(oldLabel);
+
+            TextField textField = new TextField
+            {
+                name = string.Empty,
+                value = portNameVal,
+                multiline = true,
+                style =
+                {
+                    width = 200,
+                    flexWrap = Wrap.WrapReverse,
+                    whiteSpace = WhiteSpace.Normal
+                }
+            };
+            textField.RegisterValueChangedCallback((callback) => { newPort.portName = callback.newValue; });
+            
+            Button deleteButton = new Button(() => { RemovePort(node, portNameVal); }) { text = "X"};
+            
+            newPort.portName = portNameVal;
+            newPort.style.flexGrow = 1;
+            newPort.contentContainer.style.flexGrow = 1;
+            newPort.contentContainer.Add(new Label("  "));
+            newPort.contentContainer.Add(textField);
+            newPort.contentContainer.Add(deleteButton);
             node.outputContainer.Add(newPort);
+            RefreshNode(node);
+        }
+
+        public void RemovePort(NodeGraphNode node, string portName)
+        {
+
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)

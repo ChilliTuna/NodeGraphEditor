@@ -8,6 +8,7 @@ namespace NodeSys
     public class NodeGraph : EditorWindow
     {
         private NodeGraphView graphView;
+        private string fileName = "New Graph";
 
         private void OnEnable()
         {
@@ -42,12 +43,45 @@ namespace NodeSys
         {
             Toolbar toolbar = new Toolbar();
 
-            Button createNodeButton = new Button(() => { graphView.CreateNode("Node"); });
+            TextField fileNameField = new TextField("File Name");
+            fileNameField.SetValueWithoutNotify(fileName);
+            fileNameField.MarkDirtyRepaint();
+            fileNameField.RegisterValueChangedCallback((callback) => { fileName = callback.newValue; });
 
-            createNodeButton.text = "Create Node";
-            toolbar.Add(createNodeButton);
+            toolbar.Add(new Button(() => { graphView.CreateNode("Node"); }) { text = "Create Node"});
+            toolbar.Add(new Button(() => { AttemptSaveOrLoad(TransactionType.Save); }) { text = "Save" });
+            toolbar.Add(new Button(() => { AttemptSaveOrLoad(TransactionType.Load); }) { text = "Load" });
+            toolbar.Add(fileNameField);
 
             rootVisualElement.Add(toolbar);
+        }
+
+        enum TransactionType
+        {
+            Save,
+            Load
+        }
+
+        private void AttemptSaveOrLoad(TransactionType type)
+        {
+            if(string.IsNullOrEmpty(fileName))
+            {
+                EditorUtility.DisplayDialog("Invalid filename!", "Please enter a valid filename.", "OK");
+                return;
+            }
+
+            NodeGraphSerialisationUtility serialisationUtility = NodeGraphSerialisationUtility.GetInstance(graphView);
+            switch (type)
+            {
+                case TransactionType.Save:
+                    serialisationUtility.SaveGraph(fileName);
+                    break;
+                case TransactionType.Load:
+                    serialisationUtility.LoadGraph(fileName);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
