@@ -4,3 +4,17 @@ GridBackground {
 	--thick-line-color: #502525;
 	--spacing: 10;
 }
+
+NodeGraphNode {
+	flex-grow: 1;
+}
+
+Port {
+	flex-grow: 1;
+}
+
+TextField {
+	width: 200px;
+    flex-grow: 1;
+    white-space: normal;
+}

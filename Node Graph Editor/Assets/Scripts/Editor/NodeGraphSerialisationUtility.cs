@@ -68,7 +68,7 @@ namespace NodeSys
 
         public void LoadGraph(string fileName)
         {
-            cachedContainer = Resources.Load<NodeGraphContainer>(fileName);
+            cachedContainer = Resources.Load<NodeGraphContainer>($"NodeGraph/{fileName}");
             if (cachedContainer == null)
             {
                 EditorUtility.DisplayDialog("File Not Found", $"Node Graph \"{fileName}\" file does not exist.", "OK");
@@ -83,12 +83,12 @@ namespace NodeSys
         {
             nodes.Find((item) => { return item.EntryPoint; }).NodeGUID = cachedContainer.nodeLinks[0].RootNodeGUID;
 
-            foreach (NodeGraphNode node in nodes)
+            for (int i = nodes.Count - 1; i >= 0; i--)
             {
-                if (node.EntryPoint) return;
-                edges.Where((item) => { return item.input.node == node; }).ToList().ForEach((edge) => { targetNodeGraphView.RemoveElement(edge); });
+                if (nodes[i].EntryPoint) return;
+                edges.Where((item) => { return item.input.node == nodes[i]; }).ToList().ForEach((edge) => { targetNodeGraphView.RemoveElement(edge); });
 
-                targetNodeGraphView.RemoveElement(node);
+                targetNodeGraphView.RemoveElement(nodes[i]);
             }
         }
 

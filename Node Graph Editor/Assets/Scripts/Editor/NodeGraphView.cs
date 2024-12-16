@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -48,7 +49,7 @@ namespace NodeSys
             node.EntryPoint = true;
 
             Port defaultPort = GeneratePort(node, Direction.Output, Port.Capacity.Single);
-            defaultPort.portName = "Next";
+            defaultPort.portName = "Start";
             node.outputContainer.Add(defaultPort);
 
             node.SetPosition(new Rect(100, 200, 100, 100));
@@ -61,14 +62,10 @@ namespace NodeSys
         {
             NodeGraphNode node = GenerateBlankNode(nodeName);
 
-            Port outputPort = GeneratePort(node, Direction.Output);
-            outputPort.portName = "Out";
-
             Port inputPort = GeneratePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "In";
 
-            node.outputContainer.Add(inputPort);
-            node.outputContainer.Add(outputPort);
+            node.inputContainer.Add(inputPort);
 
             Button newOutputButton = new Button(() => { AddOutPort(node); });
             newOutputButton.text = "Add new Output";
@@ -77,8 +74,9 @@ namespace NodeSys
 
             node.SetPosition(new Rect(new Vector2(100, 100), defaultNodeSize));
             node.style.minWidth = defaultNodeSize.x;
-            node.style.minHeight = defaultNodeSize.y;
-            node.style.flexGrow = 1;
+
+            AddOutPort(node, "Out 1");
+
             RefreshNode(node);
 
 
@@ -105,7 +103,7 @@ namespace NodeSys
         {
             Port newPort = GeneratePort(node, Direction.Output);
 
-            string portNameVal = portName != null ? portName : "Out " + node.outputContainer.Query("connector").ToList().Count.ToString();
+            string portNameVal = portName != null ? portName : "Out " + (node.outputContainer.Query("connector").ToList().Count + 1).ToString();
 
             Label oldLabel = newPort.contentContainer.Q<Label>("type");
             newPort.contentContainer.Remove(oldLabel);
@@ -114,31 +112,35 @@ namespace NodeSys
             {
                 name = string.Empty,
                 value = portNameVal,
-                multiline = true,
-                style =
-                {
-                    width = 200,
-                    flexWrap = Wrap.WrapReverse,
-                    whiteSpace = WhiteSpace.Normal
-                }
+                multiline = true
             };
             textField.RegisterValueChangedCallback((callback) => { newPort.portName = callback.newValue; });
             
-            Button deleteButton = new Button(() => { RemovePort(node, portNameVal); }) { text = "X"};
-            
+            Button deleteButton = new Button(() => { RemovePort(node, newPort); }) { text = "X"};
+            deleteButton.style.alignSelf = Align.Stretch;
+
+            newPort.name = Guid.NewGuid().ToString();
             newPort.portName = portNameVal;
-            newPort.style.flexGrow = 1;
-            newPort.contentContainer.style.flexGrow = 1;
-            newPort.contentContainer.Add(new Label("  "));
+            newPort.style.height = StyleKeyword.Auto;
+            newPort.contentContainer.Add(new Label(" Out"));
             newPort.contentContainer.Add(textField);
             newPort.contentContainer.Add(deleteButton);
             node.outputContainer.Add(newPort);
             RefreshNode(node);
         }
 
-        public void RemovePort(NodeGraphNode node, string portName)
+        public void RemovePort(NodeGraphNode node, Port port)
         {
+            var targetEdge = edges.ToList().Where((item) => { return item.output.name == port.name && item.output.node == port.node; });
 
+            if(targetEdge.Any())
+            {
+                Edge edge = targetEdge.First();
+                edge.input.Disconnect(edge);
+                RemoveElement(edge);
+            }
+            node.outputContainer.Remove(port);
+            RefreshNode(node);
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
