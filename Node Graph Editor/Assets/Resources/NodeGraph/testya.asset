@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 612869197fa801c4285d7e749282741f, type: 3}
+  m_Name: testya
+  m_EditorClassIdentifier: 
+  nodeLinks:
+  - rootNodeGUID: ed4bd8ce-1302-485c-ab38-607bbe44b457
+    rootNodePortID: Start
+    branchNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
+    branchNodePortID: 
+  - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
+    rootNodePortID: aa
+    branchNodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
+    branchNodePortID: 
+  - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
+    rootNodePortID: ab
+    branchNodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
+    branchNodePortID: 
+  - rootNodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
+    rootNodePortID: ba
+    branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
+    branchNodePortID: 
+  - rootNodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
+    rootNodePortID: ca
+    branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
+    branchNodePortID: 
+  - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
+    rootNodePortID: ac
+    branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
+    branchNodePortID: 
+  nodeData:
+  - nodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
+    textValue: 
+    position: {x: 228, y: 200.66667}
+  - nodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
+    textValue: 
+    position: {x: 84, y: 411.3333}
+  - nodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
+    textValue: default text
+    position: {x: 84, y: 331.3333}
+  - nodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
+    textValue: default text
+    position: {x: 592, y: 371.3333}

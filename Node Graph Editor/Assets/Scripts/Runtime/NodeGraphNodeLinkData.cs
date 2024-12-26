@@ -1,14 +1,19 @@
 using System;
+using UnityEngine;
 
 namespace NodeSys
 {
     [Serializable]
     public class NodeGraphNodeLinkData
     {
+        [SerializeField]
         private string rootNodeGUID;
+        [SerializeField]
         private string rootNodePortID;
 
+        [SerializeField]
         private string branchNodeGUID;
+        [SerializeField]
         private string branchNodePortID;
 
         public string RootNodeGUID { get { return rootNodeGUID; } set { rootNodeGUID = value; } }

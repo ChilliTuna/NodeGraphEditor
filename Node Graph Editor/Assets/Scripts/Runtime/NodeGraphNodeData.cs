@@ -6,8 +6,11 @@ namespace NodeSys
     [Serializable]
     public class NodeGraphNodeData
     {
+        [SerializeField]
         private string nodeGUID;
+        [SerializeField]
         private string textValue;
+        [SerializeField]
         private Vector2 position;
 
         public string NodeGUID

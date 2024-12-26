@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -26,7 +25,7 @@ namespace NodeSys
         public void SaveGraph(string fileName)
         {
             if (!edges.Any()) { return; }
-            
+
             NodeGraphContainer graphContainer = ScriptableObject.CreateInstance<NodeGraphContainer>();
             Edge[] connectedPorts = edges.Where((item) => { return item.input.node != null; }).ToArray();
             for (int i = 0; i < connectedPorts.Length; i++)
@@ -81,14 +80,17 @@ namespace NodeSys
 
         private void ClearExistingGraph()
         {
-            nodes.Find((item) => { return item.EntryPoint; }).NodeGUID = cachedContainer.nodeLinks[0].RootNodeGUID;
-
-            for (int i = nodes.Count - 1; i >= 0; i--)
+            if (cachedContainer.nodeLinks.Count > 0)
             {
-                if (nodes[i].EntryPoint) return;
-                edges.Where((item) => { return item.input.node == nodes[i]; }).ToList().ForEach((edge) => { targetNodeGraphView.RemoveElement(edge); });
+                nodes.Find((item) => { return item.EntryPoint; }).NodeGUID = cachedContainer.nodeLinks[0].RootNodeGUID;
 
-                targetNodeGraphView.RemoveElement(nodes[i]);
+                for (int i = nodes.Count - 1; i >= 0; i--)
+                {
+                    if (nodes[i].EntryPoint) return;
+                    edges.Where((item) => { return item.input.node == nodes[i]; }).ToList().ForEach((edge) => { targetNodeGraphView.RemoveElement(edge); });
+
+                    targetNodeGraphView.RemoveElement(nodes[i]);
+                }
             }
         }
 
