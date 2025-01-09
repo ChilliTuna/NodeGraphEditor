@@ -43,24 +43,9 @@ namespace NodeSys
             };
         }
 
-        private NodeGraphNode GenerateEntryPointNode()
+        private NodeGraphNode GenerateStubNode()
         {
-            NodeGraphNode node = GenerateBlankNode("Start Node");
-            node.EntryPoint = true;
-
-            Port defaultPort = GeneratePort(node, Direction.Output, Port.Capacity.Single);
-            defaultPort.portName = "Start";
-            node.outputContainer.Add(defaultPort);
-
-            node.SetPosition(new Rect(100, 200, 100, 100));
-            RefreshNode(node);
-
-            return node;
-        }
-
-        public NodeGraphNode GenerateNode(string nodeName)
-        {
-            NodeGraphNode node = GenerateBlankNode(nodeName);
+            NodeGraphNode node = GenerateBlankNode("");
 
             Port inputPort = GeneratePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "In";
@@ -75,10 +60,46 @@ namespace NodeSys
             node.SetPosition(new Rect(new Vector2(100, 100), defaultNodeSize));
             node.style.minWidth = defaultNodeSize.x;
 
+            return node;
+        }
+
+        private NodeGraphNode GenerateEntryPointNode()
+        {
+            NodeGraphNode node = GenerateBlankNode("Start");
+            node.EntryPoint = true;
+
+            Port defaultPort = GeneratePort(node, Direction.Output, Port.Capacity.Single);
+            defaultPort.portName = "Start";
+            node.outputContainer.Add(defaultPort);
+
+            node.SetPosition(new Rect(100, 200, 100, 100));
+            RefreshNode(node);
+
+            return node;
+        }
+
+        public NodeGraphNode GenerateNode(string nodeName)
+        {
+            NodeGraphNode node = GenerateStubNode();
+            node.title = nodeName;
+
             AddOutPort(node, "Out 1");
 
             RefreshNode(node);
 
+            return node;
+        }
+
+        public NodeGraphNode GenerateNode(NodeGraphNodeData data)
+        {
+            NodeGraphNode node = GenerateStubNode();
+
+            node += data;
+
+            //for debugging
+            node.title = node.NodeGUID;
+
+            RefreshNode(node);
 
             return node;
         }

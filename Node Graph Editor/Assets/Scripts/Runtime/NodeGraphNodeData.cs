@@ -11,6 +11,8 @@ namespace NodeSys
         [SerializeField]
         private string textValue;
         [SerializeField]
+        private string titleText;
+        [SerializeField]
         private Vector2 position;
 
         public string NodeGUID
@@ -29,6 +31,7 @@ namespace NodeSys
             }
         }
         public string TextValue { get { return textValue; } set { textValue = value; } }
+        public string TitleText { get { return titleText; } set { titleText = value; } }
         public Vector2 Position { get { return position; } set { position = value; } }
     }
 }

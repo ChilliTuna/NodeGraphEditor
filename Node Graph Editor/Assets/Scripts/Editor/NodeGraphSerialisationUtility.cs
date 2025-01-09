@@ -37,7 +37,8 @@ namespace NodeSys
                 {
                     RootNodeGUID = outputNode.NodeGUID,
                     RootNodePortID = connectedPorts[i].output.portName,
-                    BranchNodeGUID = inputNode.NodeGUID
+                    BranchNodeGUID = inputNode.NodeGUID,
+                    BranchNodePortID = "In"
                 });
             }
 
@@ -96,14 +97,40 @@ namespace NodeSys
 
         private void CreateNodesFromFile()
         {
+            List<NodeGraphNode> createdNodes = new List<NodeGraphNode>();
+            createdNodes.Add(nodes.Find((item) => { return item.EntryPoint; }));
             foreach (NodeGraphNodeData nodeData in cachedContainer.nodeData)
             {
-                NodeGraphNode tempNode = targetNodeGraphView.GenerateNode(nodeData.TextValue);
-                tempNode.NodeGUID = nodeData.NodeGUID;
+                NodeGraphNode tempNode = targetNodeGraphView.GenerateNode(nodeData);
                 targetNodeGraphView.AddElement(tempNode);
 
                 List<NodeGraphNodeLinkData> links = cachedContainer.nodeLinks.Where((item) => { return item.RootNodeGUID == nodeData.NodeGUID; }).ToList();
                 links.ForEach((item) => { targetNodeGraphView.AddOutPort(tempNode, item.RootNodePortID); });
+                if (links.Count == 0)
+                {
+                    targetNodeGraphView.AddOutPort(tempNode, "Out 1");
+                }
+                createdNodes.Add(tempNode);
+            }
+            foreach (NodeGraphNodeLinkData nodeLink in cachedContainer.nodeLinks)
+            {
+                Edge edge = new Edge();
+                foreach (NodeGraphNode node in createdNodes)
+                {
+                    if (node.NodeGUID == nodeLink.RootNodeGUID)
+                    {
+                        Port oPort = targetNodeGraphView.ports.Where((item) => { return item.portName == nodeLink.RootNodePortID && item.node == node; }).First();
+                        edge.output = oPort;
+                        oPort.Connect(edge);
+                    }
+                    else if(node.NodeGUID == nodeLink.BranchNodeGUID)
+                    {
+                        Port iPort = targetNodeGraphView.ports.Where((item) => { return item.portName == "In" && item.node == node; }).First();
+                        edge.input = iPort;
+                        iPort.Connect(edge);
+                    }
+                }
+                targetNodeGraphView.AddElement(edge);
             }
         }
     }
