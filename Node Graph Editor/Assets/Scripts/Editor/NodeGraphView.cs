@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition.Primitives;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -26,11 +29,12 @@ namespace NodeSys
             grid.StretchToParentSize();
 
             AddElement(GenerateEntryPointNode());
+            CreateMiniMap();
         }
 
-        public void CreateNode(string nodeName)
+        public void CreateDefaultNode(string nodeName)
         {
-            AddElement(GenerateNode(nodeName));
+            AddElement(GenerateChoiceNode(nodeName));
         }
 
         private NodeGraphNode GenerateBlankNode(string nodeName)
@@ -38,27 +42,32 @@ namespace NodeSys
             return new NodeGraphNode
             {
                 title = nodeName,
-                TextValue = "default text",
+                TextValue = "",
                 EntryPoint = false
             };
         }
 
-        private NodeGraphNode GenerateStubNode()
+        private NodeGraphNode GenerateStubNode(NodeGraphNodeData basis = null)
         {
             NodeGraphNode node = GenerateBlankNode("");
+            if (basis != null)
+            {
+                node += basis;
+            }
 
             Port inputPort = GeneratePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "In";
-
             node.inputContainer.Add(inputPort);
 
-            Button newOutputButton = new Button(() => { AddOutPort(node); });
-            newOutputButton.text = "Add new Output";
+            AddNodeContentFields(node);
 
-            node.titleButtonContainer.Add(newOutputButton);
-
-            node.SetPosition(new Rect(new Vector2(100, 100), defaultNodeSize));
+            node.SetPosition(new Rect(new Vector2(100, 400), defaultNodeSize));
             node.style.minWidth = defaultNodeSize.x;
+            //idk why but this wasn't picked up by USS, so I have to put it here
+            node.style.borderTopLeftRadius = 6;
+            node.style.borderTopRightRadius = 6;
+            node.style.borderBottomLeftRadius = 6;
+            node.style.borderBottomRightRadius = 6;
 
             return node;
         }
@@ -72,32 +81,62 @@ namespace NodeSys
             defaultPort.portName = "Start";
             node.outputContainer.Add(defaultPort);
 
-            node.SetPosition(new Rect(100, 200, 100, 100));
+            node.capabilities &= ~Capabilities.Movable;
+            node.capabilities &= ~Capabilities.Deletable;
+            node.capabilities &= ~Capabilities.Copiable;
+
+            node.SetPosition(new Rect(100, 300, 100, 100));
+            node.style.borderTopLeftRadius = 6;
+            node.style.borderTopRightRadius = 6;
+            node.style.borderBottomLeftRadius = 6;
+            node.style.borderBottomRightRadius = 6;
             RefreshNode(node);
 
             return node;
         }
 
-        public NodeGraphNode GenerateNode(string nodeName)
+        public NodeGraphNode GenerateChoiceNode(string nodeName)
         {
             NodeGraphNode node = GenerateStubNode();
             node.title = nodeName;
 
-            AddOutPort(node, "Out 1");
+            Button newOutputButton = new Button(() => { AddChoiceOutPort(node); });
+            newOutputButton.text = "Add new Output";
+            node.titleButtonContainer.Add(newOutputButton);
+
+            AddChoiceOutPort(node, "Out 1");
 
             RefreshNode(node);
 
             return node;
         }
 
-        public NodeGraphNode GenerateNode(NodeGraphNodeData data)
+        public NodeGraphNode GenerateChoiceNode(NodeGraphNodeData data)
         {
-            NodeGraphNode node = GenerateStubNode();
+            NodeGraphNode node = GenerateStubNode(data);
+
+            node += data;
+
+            Button newOutputButton = new Button(() => { AddChoiceOutPort(node); });
+            newOutputButton.text = "Add new Output";
+            node.titleButtonContainer.Add(newOutputButton);
+
+            //for debugging
+            //node.title = node.NodeGUID;
+
+            RefreshNode(node);
+
+            return node;
+        }
+
+        public NodeGraphNode GenerateStandardNode(NodeGraphNodeData data = null)
+        {
+            NodeGraphNode node = GenerateStubNode(data);
 
             node += data;
 
             //for debugging
-            node.title = node.NodeGUID;
+            //node.title = node.NodeGUID;
 
             RefreshNode(node);
 
@@ -120,7 +159,46 @@ namespace NodeSys
             return GeneratePort<string>(node, ioDirection, capacity);
         }
 
-        public void AddOutPort(NodeGraphNode node, string portName = null)
+        public void AddNodeContentFields(NodeGraphNode node)
+        {
+            VisualElement container = new VisualElement();
+            
+            TextField textField = new TextField
+            {
+                value = node.TextValue,
+                multiline = true,
+                style =
+                {
+                    width = 334,
+                    alignSelf = Align.Center
+                }
+            };
+            textField.RegisterValueChangedCallback((callback) => { node.TextValue = callback.newValue; });
+
+            //Explore later for conditions
+            //ListView listView = new ListView();
+
+            TestSerializedObject test = ScriptableObject.CreateInstance<TestSerializedObject>();
+            SerializedObject testObj = new SerializedObject(test);
+
+            IMGUIContainer eventField = new IMGUIContainer(()=> {
+                testObj.Update();
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField(testObj.FindProperty("testEvent"));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    testObj.ApplyModifiedProperties();
+                }
+            });
+            container.Add(eventField);
+
+            container.Add(new Label("Text"));
+            container.Add(textField);
+            
+            node.Add(container);
+        }
+
+        public void AddChoiceOutPort(NodeGraphNode node, string portName = null)
         {
             Port newPort = GeneratePort(node, Direction.Output);
 
@@ -146,6 +224,20 @@ namespace NodeSys
             newPort.contentContainer.Add(new Label(" Out"));
             newPort.contentContainer.Add(textField);
             newPort.contentContainer.Add(deleteButton);
+            node.outputContainer.Add(newPort);
+            RefreshNode(node);
+        }
+
+        public void AddOutPort(NodeGraphNode node)
+        {
+            Port newPort = GeneratePort(node, Direction.Output);
+
+            string portNameVal = "Out";
+
+            newPort.name = Guid.NewGuid().ToString();
+            newPort.portName = portNameVal;
+            newPort.style.height = StyleKeyword.Auto;
+            newPort.contentContainer.Add(new Label(" Out"));
             node.outputContainer.Add(newPort);
             RefreshNode(node);
         }
@@ -176,6 +268,13 @@ namespace NodeSys
             });
 
             return compatiblePorts;
+        }
+
+        private void CreateMiniMap()
+        {
+            MiniMap miniMap = new MiniMap { anchored = true };
+            miniMap.SetPosition(new Rect(10, 30, 200, 200));
+            Add(miniMap);
         }
     }
 }

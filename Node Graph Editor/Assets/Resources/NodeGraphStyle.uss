@@ -7,6 +7,7 @@ GridBackground {
 
 NodeGraphNode {
 	flex-grow: 1;
+	background-color: #1F341F;
 }
 
 Port {

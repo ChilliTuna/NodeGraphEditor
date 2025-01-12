@@ -48,7 +48,7 @@ namespace NodeSys
             fileNameField.MarkDirtyRepaint();
             fileNameField.RegisterValueChangedCallback((callback) => { fileName = callback.newValue; });
 
-            toolbar.Add(new Button(() => { graphView.CreateNode("Node"); }) { text = "Create Node"});
+            toolbar.Add(new Button(() => { graphView.CreateDefaultNode("Node"); }) { text = "Create Node"});
             toolbar.Add(new Button(() => { AttemptSaveOrLoad(TransactionType.Save); }) { text = "Save" });
             toolbar.Add(new Button(() => { AttemptSaveOrLoad(TransactionType.Load); }) { text = "Load" });
             toolbar.Add(fileNameField);

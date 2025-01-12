@@ -1,8 +1,15 @@
 using System;
 using UnityEngine;
+using static TreeEditor.TreeEditorHelper;
 
 namespace NodeSys
 {
+    public enum NodeType
+    {
+        Standard,
+        Choice
+    }
+
     [Serializable]
     public class NodeGraphNodeData
     {
@@ -14,6 +21,8 @@ namespace NodeSys
         private string titleText;
         [SerializeField]
         private Vector2 position;
+        
+        private NodeType nodeType;
 
         public string NodeGUID
         {
@@ -33,5 +42,6 @@ namespace NodeSys
         public string TextValue { get { return textValue; } set { textValue = value; } }
         public string TitleText { get { return titleText; } set { titleText = value; } }
         public Vector2 Position { get { return position; } set { position = value; } }
+        public NodeType NodeType { get { return nodeType; } set { nodeType = value; } }
     }
 }

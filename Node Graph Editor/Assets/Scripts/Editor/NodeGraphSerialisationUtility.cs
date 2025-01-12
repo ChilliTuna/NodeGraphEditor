@@ -101,14 +101,14 @@ namespace NodeSys
             createdNodes.Add(nodes.Find((item) => { return item.EntryPoint; }));
             foreach (NodeGraphNodeData nodeData in cachedContainer.nodeData)
             {
-                NodeGraphNode tempNode = targetNodeGraphView.GenerateNode(nodeData);
+                NodeGraphNode tempNode = targetNodeGraphView.GenerateChoiceNode(nodeData);
                 targetNodeGraphView.AddElement(tempNode);
 
                 List<NodeGraphNodeLinkData> links = cachedContainer.nodeLinks.Where((item) => { return item.RootNodeGUID == nodeData.NodeGUID; }).ToList();
-                links.ForEach((item) => { targetNodeGraphView.AddOutPort(tempNode, item.RootNodePortID); });
+                links.ForEach((item) => { targetNodeGraphView.AddChoiceOutPort(tempNode, item.RootNodePortID); });
                 if (links.Count == 0)
                 {
-                    targetNodeGraphView.AddOutPort(tempNode, "Out 1");
+                    targetNodeGraphView.AddChoiceOutPort(tempNode, "Out 1");
                 }
                 createdNodes.Add(tempNode);
             }

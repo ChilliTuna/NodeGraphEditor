@@ -16,37 +16,41 @@ MonoBehaviour:
   - rootNodeGUID: ed4bd8ce-1302-485c-ab38-607bbe44b457
     rootNodePortID: Start
     branchNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
-    branchNodePortID: 
+    branchNodePortID: In
   - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
     rootNodePortID: aa
     branchNodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
-    branchNodePortID: 
+    branchNodePortID: In
   - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
     rootNodePortID: ab
     branchNodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
-    branchNodePortID: 
+    branchNodePortID: In
   - rootNodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
     rootNodePortID: ba
     branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
-    branchNodePortID: 
+    branchNodePortID: In
   - rootNodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
     rootNodePortID: ca
     branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
-    branchNodePortID: 
+    branchNodePortID: In
   - rootNodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
     rootNodePortID: ac
     branchNodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
-    branchNodePortID: 
+    branchNodePortID: In
   nodeData:
   - nodeGUID: ff3c28b0-4a78-4e16-9e57-a4aa09d83691
-    textValue: 
-    position: {x: 228, y: 200.66667}
-  - nodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
-    textValue: 
-    position: {x: 84, y: 411.3333}
+    textValue: wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+    titleText: 
+    position: {x: 197.33334, y: 296}
   - nodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
     textValue: default text
-    position: {x: 84, y: 331.3333}
+    titleText: 
+    position: {x: 590.6667, y: 296}
+  - nodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
+    textValue: 
+    titleText: 
+    position: {x: 590.6667, y: 405.3333}
   - nodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
     textValue: default text
-    position: {x: 592, y: 371.3333}
+    titleText: 
+    position: {x: 197.33334, y: 505.33334}
