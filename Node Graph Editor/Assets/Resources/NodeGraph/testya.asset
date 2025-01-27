@@ -42,15 +42,15 @@ MonoBehaviour:
     textValue: wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
     titleText: 
     position: {x: 197.33334, y: 296}
+  - nodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
+    textValue: 
+    titleText: 
+    position: {x: 984, y: 578.6667}
+  - nodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
+    textValue: default text
+    titleText: 
+    position: {x: 590.6667, y: 578.6667}
   - nodeGUID: 992a7ee8-e280-4730-96a0-117968f6e499
     textValue: default text
     titleText: 
     position: {x: 590.6667, y: 296}
-  - nodeGUID: 0520e5ec-afb8-4fcf-9c6b-452939ba084e
-    textValue: 
-    titleText: 
-    position: {x: 590.6667, y: 405.3333}
-  - nodeGUID: a1027f02-1dc7-4f45-b47e-a71a2019962d
-    textValue: default text
-    titleText: 
-    position: {x: 197.33334, y: 505.33334}

@@ -190,10 +190,10 @@ namespace NodeSys
                     testObj.ApplyModifiedProperties();
                 }
             });
-            container.Add(eventField);
 
             container.Add(new Label("Text"));
             container.Add(textField);
+            container.Add(eventField);
             
             node.Add(container);
         }
